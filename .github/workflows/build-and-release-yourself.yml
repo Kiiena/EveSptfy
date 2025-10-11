@@ -93,6 +93,16 @@ jobs:
 
       - name: Create Patched Package
         run: ipapatch -input EeveeSpotify.ipa -output EeveeSpotify-patched.ipa
+        
+      - name: Sign WatchApp if present
+        run: |
+          WATCH_BINARY="${{ github.workspace }}/Payload/Spotify.app/Watch/WatchApp.app/WatchApp"
+          if [ -f "$WATCH_BINARY" ]; then
+            echo "Signing WatchApp binary..."
+            codesign -s "-" "$WATCH_BINARY"
+          else
+            echo "WatchApp binary not found, skipping signing."
+          fi
    
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2.0.1
